@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'feedback/css/home.css' %}">
+</head>
+<body>
+    <main class="page-shell dashboard-shell">
+        <section class="dashboard-panel">
+            <div class="dashboard-hero">
+                <div class="brand-lockup">
+                    <img class="club-logo" src="{% static 'feedback/images/theimperialclubtransparent.png' %}" alt="The Imperial Club logo">
+                </div>
+                <p class="eyebrow">Feedback dashboard</p>
+                <h1>Choose the form you want to fill.</h1>
+                <p class="hero-text">
+                    Use this central dashboard to open the right feedback page for the experience you want to record.
+                    Each form is separated into its own route so the process stays focused and easier to manage.
+                </p>
+            </div>
+
+            <div class="dashboard-grid">
+                {% for card in form_cards %}
+                    <a class="dashboard-card" href="{% url 'form-page' card.slug %}">
+                        <p class="card-kicker">{{ card.kicker }}</p>
+                        <h2>{{ card.title }}</h2>
+                        <p>{{ card.description }}</p>
+                        <span class="card-link">Open form</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>

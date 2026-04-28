@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'feedback/css/home.css' %}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="hero-panel">
+            <div class="hero-copy">
+                <div class="brand-lockup brand-lockup-left">
+                    <img class="club-logo" src="{% static 'feedback/images/theimperialclubtransparent.png' %}" alt="The Imperial Club logo">
+                </div>
+                <a class="back-link" href="{% url 'home' %}">Back to dashboard</a>
+                <p class="eyebrow">{{ page.kicker }}</p>
+                <h1>{{ page.heading }}</h1>
+                <p class="hero-text">{{ page.description }}</p>
+                <ul class="feature-list">
+                    {% for point in page.hero_points %}
+                        <li>{{ point }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="form-card">
+                <div class="card-header">
+                    <p class="card-kicker">{{ page.title }}</p>
+                    <h2>Share your feedback</h2>
+                    <p class="card-text">Each form is separated so members can focus on a single experience at a time.</p>
+                </div>
+
+                {% if submitted %}
+                    <div class="status-banner" role="status" aria-live="polite">
+                        Your feedback has been recorded successfully. Thank you for sharing your experience.
+                    </div>
+                {% endif %}
+
+                <form method="post" class="feedback-form" novalidate>
+                    {% csrf_token %}
+
+                    {% for section in page.sections %}
+                        <section class="form-section">
+                            <h3>{{ section.title }}</h3>
+
+                            {% if section.layout == "fields" %}
+                                <div class="field-grid {% if section.columns == 2 %}field-grid-two{% elif section.columns == 3 %}field-grid-three{% endif %}">
+                                    {% for field in section.bound_fields %}
+                                        <div class="field-group {% if field.errors %}has-error{% endif %}">
+                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <div class="field-error">{{ field.errors|striptags }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% elif section.layout == "cards" %}
+                                <div class="ratings-grid {% if section.columns == 3 %}ratings-grid-three{% endif %}">
+                                    {% for field in section.bound_fields %}
+                                        <div class="choice-card {% if field.errors %}has-error{% endif %}">
+                                            <p class="group-label">{{ field.label }}</p>
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <div class="field-error">{{ field.errors|striptags }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {% for field in section.bound_fields %}
+                                    <div class="{% if field.name == 'comments' %}field-group{% else %}choice-group{% endif %} {% if field.errors %}has-error{% endif %}">
+                                        {% if field.name == 'comments' %}
+                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                            {{ field }}
+                                        {% else %}
+                                            <p class="group-label">{{ field.label }}</p>
+                                            <div class="choice-list {% if field.name == 'overall_experience' or field.name == 'recommend_rating' or field.name == 'overall_spa_experience' %}choice-list-inline{% endif %} {% if field.name == 'recommend_rating' or field.name == 'therapist_rating' %}choice-list-score{% endif %}">
+                                                {{ field }}
+                                            </div>
+                                        {% endif %}
+                                        {% if field.errors %}
+                                            <div class="field-error">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </section>
+                    {% endfor %}
+
+                    <button type="submit" class="submit-button">{{ page.submit_label }}</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
