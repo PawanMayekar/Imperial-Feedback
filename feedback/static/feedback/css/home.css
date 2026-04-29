@@ -1,16 +1,18 @@
 :root {
-    --bg: #fdfbf8; /* Warm off-white "brand paper" */
+    /* Aligned with imperial-club-feedback/src/index.css */
+    --bg: #f5f2ed;
     --surface-primary: #ffffff;
     --surface-secondary: #f5f2eb;
-    --accent: #bda06d; /* Bespoke gold */
-    --accent-dark: #997e51;
-    --text: #1a1e24; /* Deep ink text */
-    --border: #e4decb;
-    --shadow: 0 18px 40px rgba(26, 30, 36, 0.08);
-    --shadow-soft: 0 8px 24px rgba(26, 30, 36, 0.05);
+    --accent: #c5a059;
+    --accent-dark: #a68447;
+    --text: #1a1a1a;
+    --border: rgba(26, 26, 26, 0.08);
+    --shadow: 0 18px 40px rgba(26, 26, 26, 0.08);
+    --shadow-soft: 0 8px 24px rgba(26, 26, 26, 0.05);
     --radius-lg: 22px;
     --radius-md: 14px;
     --radius-sm: 12px;
+    --accent-rgb: 197, 160, 89;
 }
 
 *,
@@ -23,12 +25,22 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: "Inter", Arial, sans-serif;
-    background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 35%),
-        linear-gradient(180deg, #fdfbf8 0%, #f4efe6 100%);
+    background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.form-page-body {
+    margin: 0;
+    background: var(--bg);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -41,6 +53,504 @@ input,
 textarea,
 button {
     font: inherit;
+}
+
+/* --- Dashboard (imperial-club-feedback / App.tsx) --- */
+.dashboard-page {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+}
+
+.dashboard-header {
+    text-align: center;
+    max-width: 56rem;
+    margin: 0 auto 4rem;
+}
+
+@media (min-width: 768px) {
+    .dashboard-page {
+        padding: 6rem 1.5rem 6rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 6rem;
+    }
+}
+
+.dashboard-logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.dashboard-logo {
+    display: block;
+    width: auto;
+    max-width: 260px;
+    max-height: 120px;
+    object-fit: contain;
+    padding: 0.75rem 1.25rem;
+    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.5s ease, box-shadow 0.35s ease;
+}
+
+.dashboard-logo-wrap:hover .dashboard-logo {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+}
+
+.dashboard-tagline {
+    margin: 0 0 1.5rem;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+}
+
+.dashboard-headline {
+    margin: 0 0 2.5rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+}
+
+.dashboard-headline-italic {
+    font-style: italic;
+}
+
+.dashboard-rule {
+    width: 6rem;
+    height: 1px;
+    margin: 0 auto 2.5rem;
+    background: rgba(var(--accent-rgb), 0.3);
+}
+
+.dashboard-lede {
+    margin: 0 auto;
+    max-width: 42rem;
+    font-size: 1.125rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(26, 26, 26, 0.5);
+}
+
+@media (min-width: 768px) {
+    .dashboard-lede {
+        font-size: 1.25rem;
+    }
+}
+
+.dashboard-card-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    color: var(--accent);
+    background: var(--bg);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    transition: transform 0.5s ease;
+}
+
+.dashboard-card:hover .dashboard-card-icon {
+    transform: scale(1.1);
+}
+
+.dashboard-card-desc {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgba(26, 26, 26, 0.5);
+    flex-grow: 1;
+}
+
+.dashboard-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: gap 0.3s ease;
+}
+
+.dashboard-card:hover .dashboard-card-cta {
+    gap: 1rem;
+}
+
+/* --- Form page split layout --- */
+.form-page {
+    min-height: 100vh;
+}
+
+.form-split {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+    .form-split {
+        grid-template-columns: 1fr 1.5fr;
+    }
+}
+
+.form-hero-aside {
+    padding: 2rem 1.5rem;
+    background: var(--bg);
+    border-bottom: 1px solid rgba(26, 26, 26, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-hero-logo-link {
+    display: inline-flex;
+    align-self: flex-start;
+    margin-bottom: 1.75rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 0.875rem;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.4s ease, box-shadow 0.3s ease;
+}
+
+.form-hero-logo-link:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+}
+
+.form-hero-logo {
+    display: block;
+    width: auto;
+    max-width: 160px;
+    max-height: 64px;
+    object-fit: contain;
+}
+
+@media (min-width: 1024px) {
+    .form-hero-aside {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        height: 100vh;
+        padding: 4rem;
+        border-bottom: none;
+        border-right: 1px solid rgba(26, 26, 26, 0.05);
+    }
+}
+
+.form-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(26, 26, 26, 0.4);
+}
+
+.form-back-link:hover {
+    color: var(--accent);
+}
+
+.form-hero-inner {
+    max-width: 28rem;
+}
+
+.form-hero-heading {
+    margin: 0 0 2rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+}
+
+.form-main {
+    background: #fff;
+    padding: 2rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .form-main {
+        padding: 4rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .form-main {
+        padding: 6rem;
+    }
+}
+
+.form-main-inner {
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.form-intro {
+    margin-bottom: 3rem;
+}
+
+.form-intro-kicker {
+    margin: 0 0 0.5rem;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.form-intro-title {
+    margin: 0 0 1rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2.25rem;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.form-intro-rule {
+    width: 3rem;
+    height: 2px;
+    background: rgba(var(--accent-rgb), 0.3);
+}
+
+.thank-you-card {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
+    animation: fade-up 0.65s ease both;
+}
+
+.thank-you-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto 2rem;
+    border-radius: 999px;
+    background: rgba(var(--accent-rgb), 0.1);
+    color: var(--accent);
+}
+
+.thank-you-title {
+    margin: 0 0 1rem;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2.25rem;
+    font-weight: 400;
+}
+
+.thank-you-text {
+    margin: 0 auto 2.5rem;
+    max-width: 22rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(26, 26, 26, 0.6);
+}
+
+.thank-you-home {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    border-radius: 999px;
+    background: var(--text);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: var(--shadow-soft);
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
+}
+
+.thank-you-home:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.feature-list--rings {
+    margin-top: 2.5rem;
+}
+
+.feature-list--rings li {
+    align-items: flex-start;
+    gap: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(26, 26, 26, 0.7);
+}
+
+.feature-list--rings li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.15rem;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+    background: radial-gradient(circle at center, var(--accent) 0 3px, transparent 3px);
+    box-shadow: none;
+}
+
+.form-footer-note {
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: center;
+    color: rgba(26, 26, 26, 0.72);
+}
+
+.form-footer-note--after-submit {
+    margin: 2rem 0 0;
+    padding-top: 0.5rem;
+    border-top: none;
+}
+
+.spa-name-legend {
+    margin: 0 0 0.75rem;
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Score grid: 2-column layout for 1–5 ratings (Resident Dining form) */
+.score-grid {
+    display: grid;
+    gap: 1rem 1.5rem;
+}
+
+.score-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.score-grid .choice-group {
+    gap: 8px;
+}
+
+.score-grid .group-label {
+    font-size: 0.92rem;
+}
+
+.score-grid .choice-list-score label {
+    max-width: 2.4rem;
+    font-size: 0.85rem;
+}
+
+.score-grid .choice-list-score ul,
+.score-grid .choice-list-score > div {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+}
+
+@media (max-width: 700px) {
+    .score-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.submit-wrap {
+    padding-top: 3rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(26, 26, 26, 0.05);
+}
+
+.submit-button--full {
+    width: 100%;
+    border-radius: 1rem;
+    padding: 1.5rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0;
+    animation: none;
+}
+
+.submit-button--full:hover {
+    background: var(--accent);
+}
+
+.form-main .form-section {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0 0 2.5rem;
+    margin: 0;
+    box-shadow: none;
+    animation: none;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.06);
+}
+
+.form-main .form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section-title {
+    margin: 0 0 1.5rem;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(var(--accent-rgb), 0.65);
+}
+
+.form-main .field-group input,
+.form-main .field-group textarea {
+    border: none;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+    border-radius: 0;
+    background: var(--bg);
+    padding: 1rem 0.25rem;
+}
+
+.form-main .field-group input:hover,
+.form-main .field-group textarea:hover {
+    background: #faf8f5;
+}
+
+.form-main .field-group input:focus,
+.form-main .field-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: none;
+    background: #fff;
+}
+
+.form-main .field-group textarea {
+    border: 1px solid rgba(26, 26, 26, 0.08);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    min-height: 10rem;
+}
+
+.form-main .field-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12);
 }
 
 .page-shell {
@@ -122,18 +632,20 @@ button {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 22px;
 }
 
 .dashboard-card {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 14px;
     padding: 32px 28px;
     text-decoration: none;
     color: var(--text);
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(228, 222, 203, 0.88);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(26, 26, 26, 0.05);
     border-radius: 20px;
     box-shadow: var(--shadow-soft);
     transition:
@@ -147,12 +659,14 @@ button {
 .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
 .dashboard-card:nth-child(2) { animation-delay: 0.2s; }
 .dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+.dashboard-card:nth-child(5) { animation-delay: 0.5s; }
 
 .dashboard-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow);
-    border-color: rgba(189, 160, 109, 0.5);
-    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(var(--accent-rgb), 0.35);
+    background: rgba(255, 255, 255, 0.65);
 }
 
 .dashboard-card h2,
@@ -175,7 +689,7 @@ button {
 
 .card-link:hover,
 .back-link:hover {
-    color: #7a633e;
+    color: var(--accent-dark);
 }
 
 .back-link {
@@ -240,7 +754,7 @@ button {
     height: 8px;
     border-radius: 999px;
     background: var(--accent);
-    box-shadow: 0 0 0 6px rgba(189, 160, 109, 0.15);
+    box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.15);
 }
 
 .form-card {
@@ -256,9 +770,9 @@ button {
     margin-bottom: 24px;
     padding: 16px 20px;
     border-radius: var(--radius-sm);
-    background: rgba(189, 160, 109, 0.12);
-    border: 1px solid rgba(189, 160, 109, 0.25);
-    color: #7a633e;
+    background: rgba(var(--accent-rgb), 0.12);
+    border: 1px solid rgba(var(--accent-rgb), 0.25);
+    color: var(--accent-dark);
     line-height: 1.5;
     font-weight: 500;
 }
@@ -296,6 +810,11 @@ button {
 
 .field-grid-two {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* When exactly three fields in a 2-column grid, put the last field on its own row (spa name/date, club visit row). */
+.form-section:has(.field-grid-two) .field-grid-two:has(> .field-group:nth-child(3):last-child) .field-group:last-child {
+    grid-column: 1 / -1;
 }
 
 .field-grid-three {
@@ -336,14 +855,14 @@ button {
 
 .field-group input:hover,
 .field-group textarea:hover {
-    border-color: rgba(189, 160, 109, 0.5);
+    border-color: rgba(var(--accent-rgb), 0.45);
     background: #ffffff;
 }
 
 .field-group input:focus,
 .field-group textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(189, 160, 109, 0.15);
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15);
     background: #ffffff;
 }
 
@@ -414,7 +933,8 @@ button {
 
 .choice-list-score ul,
 .choice-list-score > div {
-    grid-template-columns: repeat(5, minmax(40px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
 }
 
 .choice-list li,
@@ -444,7 +964,7 @@ button {
 
 .choice-list label:hover,
 .choice-card label:hover {
-    border-color: rgba(189, 160, 109, 0.6);
+    border-color: rgba(var(--accent-rgb), 0.45);
     background: #ffffff;
 }
 
@@ -452,17 +972,48 @@ button {
 .choice-card label:has(input:checked) {
     border-color: var(--accent-dark);
     background: #ffffff;
-    box-shadow: 0 4px 12px rgba(189, 160, 109, 0.08);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.08);
 }
 
 .choice-list-score label {
+    position: relative;
     justify-content: center;
-    padding: 12px 8px;
+    padding: 0;
+    width: 100%;
+    max-width: 3rem;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    margin: 0 auto;
+}
+
+.form-main .choice-list-score label span {
+    font-weight: 500;
+}
+
+.choice-list-score input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    appearance: auto;
+}
+
+.choice-list-score label:has(input:checked) {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
 }
 
 /* Custom Checkbox/Radio */
-.choice-list input[type="radio"],
-.choice-list input[type="checkbox"],
+.choice-list:not(.choice-list-score) input[type="radio"],
+.choice-list:not(.choice-list-score) input[type="checkbox"],
 .choice-card input[type="radio"],
 .choice-card input[type="checkbox"] {
     appearance: none;
@@ -479,17 +1030,17 @@ button {
     flex: 0 0 auto;
 }
 
-.choice-list input[type="radio"],
+.choice-list:not(.choice-list-score) input[type="radio"],
 .choice-card input[type="radio"] {
     border-radius: 50%;
 }
 
-.choice-list input[type="checkbox"],
+.choice-list:not(.choice-list-score) input[type="checkbox"],
 .choice-card input[type="checkbox"] {
     border-radius: 4px;
 }
 
-.choice-list input[type="radio"]::before,
+.choice-list:not(.choice-list-score) input[type="radio"]::before,
 .choice-card input[type="radio"]::before {
     content: "";
     width: 10px;
@@ -500,7 +1051,7 @@ button {
     box-shadow: inset 10px 10px var(--accent-dark);
 }
 
-.choice-list input[type="checkbox"]::before,
+.choice-list:not(.choice-list-score) input[type="checkbox"]::before,
 .choice-card input[type="checkbox"]::before {
     content: "";
     width: 12px;
@@ -511,19 +1062,19 @@ button {
     clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
 
-.choice-list input:checked,
+.choice-list:not(.choice-list-score) input:checked,
 .choice-card input:checked {
     border-color: var(--accent-dark);
 }
 
-.choice-list input:checked::before,
+.choice-list:not(.choice-list-score) input:checked::before,
 .choice-card input:checked::before {
     transform: scale(1);
 }
 
-.choice-list input:focus-visible,
+.choice-list:not(.choice-list-score) input:focus-visible,
 .choice-card input:focus-visible {
-    outline: 2px solid rgba(189, 160, 109, 0.4);
+    outline: 2px solid rgba(var(--accent-rgb), 0.35);
     outline-offset: 2px;
 }
 
@@ -565,7 +1116,7 @@ button {
 }
 
 .submit-button:focus-visible {
-    outline: 3px solid rgba(189, 160, 109, 0.5);
+    outline: 3px solid rgba(var(--accent-rgb), 0.45);
     outline-offset: 3px;
 }
 
@@ -580,6 +1131,11 @@ button {
     }
 }
 
+/* ==========================================================
+   Tablet (≤ 900px): tighten the form-page split layout while
+   the form still renders as a single column (it stacks below
+   1024px). Also tames the legacy hero-panel layout.
+   ========================================================== */
 @media (max-width: 900px) {
     .hero-panel {
         grid-template-columns: 1fr;
@@ -597,14 +1153,200 @@ button {
 
     .ratings-grid,
     .ratings-grid-three,
-    .field-grid-two,
     .field-grid-three,
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
+
+    .form-hero-aside {
+        padding: 1.75rem 1.25rem 1.25rem;
+    }
+
+    .form-back-link {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-hero-heading {
+        font-size: clamp(2rem, 6vw, 3.25rem);
+        margin-bottom: 1.25rem;
+    }
+
+    .form-hero-inner .hero-text {
+        font-size: 1rem;
+    }
+
+    .feature-list--rings {
+        margin-top: 1.5rem;
+    }
+
+    .form-main {
+        padding: 1.75rem 1.25rem 3rem;
+    }
+
+    .form-main .form-section {
+        padding-bottom: 2rem;
+    }
+
+    .form-intro {
+        margin-bottom: 2rem;
+    }
+
+    .form-intro-title {
+        font-size: 1.85rem;
+    }
 }
 
+/* ==========================================================
+   Phone (≤ 540px): full mobile pass — dashboard, hero,
+   form sections, choice rows, thank-you card and CTAs.
+   ========================================================== */
 @media (max-width: 540px) {
+    /* Dashboard */
+    .dashboard-page {
+        padding: 2rem 1rem 4rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .dashboard-logo-wrap {
+        margin-bottom: 1.75rem;
+    }
+
+    .dashboard-logo {
+        max-width: 200px;
+        max-height: 88px;
+        padding: 0.5rem 1rem;
+    }
+
+    .dashboard-tagline {
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-headline {
+        font-size: clamp(2.25rem, 9vw, 3.5rem);
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-rule {
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-lede {
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    .dashboard-grid {
+        gap: 14px;
+    }
+
+    .dashboard-card {
+        padding: 24px 22px;
+        gap: 12px;
+    }
+
+    .dashboard-card-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-card-desc {
+        font-size: 0.9rem;
+    }
+
+    /* Form hero on phones: collapse to a compact header
+       (logo + back link). The form intro re-states the title,
+       so the long hero copy is redundant on small screens. */
+    .form-hero-aside {
+        padding: 1rem 1rem 0.75rem;
+        border-bottom: 1px solid rgba(26, 26, 26, 0.06);
+    }
+
+    .form-hero-logo-link {
+        margin-bottom: 0.85rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 0.75rem;
+    }
+
+    .form-hero-logo {
+        max-width: 130px;
+        max-height: 52px;
+    }
+
+    .form-back-link {
+        margin-bottom: 0.25rem;
+        font-size: 11px;
+    }
+
+    .form-hero-inner {
+        display: none;
+    }
+
+    /* Form main (right column) */
+    .form-main {
+        padding: 1.5rem 1rem 2.5rem;
+    }
+
+    .form-intro {
+        margin-bottom: 1.75rem;
+    }
+
+    .form-intro-kicker {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+    }
+
+    .form-intro-title {
+        font-size: 1.6rem;
+    }
+
+    .form-main .form-section {
+        padding-bottom: 1.75rem;
+    }
+
+    .form-section-title {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        margin-bottom: 1rem;
+    }
+
+    .feedback-form {
+        gap: 18px;
+    }
+
+    /* iOS zoom guard: inputs/textarea must be >= 16px on mobile */
+    .form-main .field-group input,
+    .form-main .field-group textarea,
+    .field-group input,
+    .field-group textarea {
+        font-size: 16px;
+    }
+
+    .form-main .field-group input {
+        padding: 0.75rem 0.25rem;
+    }
+
+    .form-main .field-group textarea {
+        padding: 1rem;
+        min-height: 8rem;
+    }
+
+    /* Stack any field grid on phones */
+    .field-grid-two,
+    .field-grid-three {
+        grid-template-columns: 1fr;
+    }
+
+    /* Legacy hero/form-card layout if used */
     .page-shell {
         padding: 16px;
     }
@@ -620,23 +1362,119 @@ button {
     }
 
     .club-logo {
-        max-width: 160px;
-        max-height: 80px;
+        max-width: 180px;
+        max-height: 88px;
     }
 
-    .submit-button {
-        width: 100%;
+    /* Choice rows */
+    .choice-list label,
+    .choice-card label {
+        min-height: 48px;
+        padding: 10px 14px;
+        font-size: 0.92rem;
+    }
+
+    .choice-list-inline ul,
+    .choice-list-inline > div {
+        grid-template-columns: 1fr;
+    }
+
+    .choice-list-score ul,
+    .choice-list-score > div {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    /* Bigger pills on phones for proper 44px+ tap targets */
+    .choice-list-score label {
+        max-width: 3rem;
+        font-size: 0.95rem;
+    }
+
+    .score-grid .choice-list-score label {
+        max-width: 2.75rem;
+        font-size: 0.9rem;
     }
 
     .form-section,
     .choice-card {
-        padding: 20px;
+        padding: 18px;
     }
 
-    .choice-list-inline ul,
-    .choice-list-score ul,
-    .choice-list-inline > div,
-    .choice-list-score > div {
-        grid-template-columns: 1fr;
+    /* CTA / submit */
+    .submit-button {
+        width: 100%;
+    }
+
+    .submit-button--full {
+        padding: 1.15rem 1.25rem;
+        font-size: 0.85rem;
+        letter-spacing: 0.18em;
+        border-radius: 0.875rem;
+    }
+
+    .submit-wrap {
+        padding-top: 2rem;
+    }
+
+    /* Thank-you card */
+    .thank-you-card {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .thank-you-icon {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .thank-you-title {
+        font-size: 1.85rem;
+    }
+
+    .thank-you-text {
+        font-size: 0.95rem;
+        margin-bottom: 1.75rem;
+    }
+}
+
+/* Very small phones (≤ 380px): one more polish pass */
+@media (max-width: 380px) {
+    .dashboard-page {
+        padding: 1.5rem 0.875rem 3rem;
+    }
+
+    .dashboard-headline {
+        font-size: clamp(2rem, 10vw, 2.75rem);
+    }
+
+    .dashboard-card {
+        padding: 22px 18px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.35rem;
+    }
+
+    .form-hero-aside {
+        padding: 0.875rem 0.875rem 0.625rem;
+    }
+
+    .form-main {
+        padding: 1.25rem 0.875rem 2rem;
+    }
+
+    .form-intro-title {
+        font-size: 1.45rem;
+    }
+
+    .choice-list-score label {
+        max-width: 2.75rem;
+        font-size: 0.9rem;
+    }
+
+    .score-grid .choice-list-score label {
+        max-width: 2.5rem;
+        font-size: 0.85rem;
     }
 }

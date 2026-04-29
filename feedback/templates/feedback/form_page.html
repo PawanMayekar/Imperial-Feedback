@@ -3,100 +3,151 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="color-scheme" content="light">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>{{ page.title }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'feedback/css/home.css' %}">
 </head>
-<body>
-    <main class="page-shell">
-        <section class="hero-panel">
-            <div class="hero-copy">
-                <div class="brand-lockup brand-lockup-left">
-                    <img class="club-logo" src="{% static 'feedback/images/theimperialclubtransparent.png' %}" alt="The Imperial Club logo">
+<body class="form-page-body">
+    <main class="form-page">
+        <div class="form-split">
+            <aside class="form-hero-aside">
+                <a class="form-hero-logo-link" href="{% url 'home' %}" aria-label="The Imperial Club — back to dashboard">
+                    <img
+                        class="form-hero-logo"
+                        src="{% static 'feedback/images/theimperialclubtransparent.png' %}"
+                        alt="The Imperial Club logo"
+                    >
+                </a>
+                <a class="back-link form-back-link" href="{% url 'home' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                    Back to Dashboard
+                </a>
+                <div class="form-hero-inner">
+                    <p class="eyebrow">{{ page.kicker }}</p>
+                    <h1 class="form-hero-heading">{{ page.heading }}</h1>
+                    <p class="hero-text">{{ page.description }}</p>
+                    <ul class="feature-list feature-list--rings">
+                        {% for point in page.hero_points %}
+                            <li>{{ point }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <a class="back-link" href="{% url 'home' %}">Back to dashboard</a>
-                <p class="eyebrow">{{ page.kicker }}</p>
-                <h1>{{ page.heading }}</h1>
-                <p class="hero-text">{{ page.description }}</p>
-                <ul class="feature-list">
-                    {% for point in page.hero_points %}
-                        <li>{{ point }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+            </aside>
 
-            <div class="form-card">
-                <div class="card-header">
-                    <p class="card-kicker">{{ page.title }}</p>
-                    <h2>Share your feedback</h2>
-                    <p class="card-text">Each form is separated so members can focus on a single experience at a time.</p>
-                </div>
+            <div class="form-main">
+                <div class="form-main-inner">
+                    {% if submitted %}
+                        <div class="thank-you-card" role="status" aria-live="polite">
+                            <div class="thank-you-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 12 2 2 4-4"/></svg>
+                            </div>
+                            <h2 class="thank-you-title">Thank you</h2>
+                            <p class="thank-you-text">
+                                Your feedback has been recorded. Our team will review your comments to continue improving our guest experience.
+                            </p>
+                            <a class="thank-you-home" href="{% url 'home' %}">Return Home</a>
+                        </div>
+                    {% else %}
+                        <header class="form-intro">
+                            {% if page.form_intro_kicker %}
+                                <p class="form-intro-kicker">{{ page.form_intro_kicker }}</p>
+                            {% endif %}
+                            <h2 class="form-intro-title">{{ page.form_intro_title|default:"Share your Experience" }}</h2>
+                            <div class="form-intro-rule" aria-hidden="true"></div>
+                        </header>
 
-                {% if submitted %}
-                    <div class="status-banner" role="status" aria-live="polite">
-                        Your feedback has been recorded successfully. Thank you for sharing your experience.
-                    </div>
-                {% endif %}
+                        <form method="post" class="feedback-form" novalidate>
+                            {% csrf_token %}
 
-                <form method="post" class="feedback-form" novalidate>
-                    {% csrf_token %}
+                            {% for section in page.sections %}
+                                <section class="form-section">
+                                    {% if section.title %}
+                                        <h3 class="form-section-title">{{ section.title }}</h3>
+                                    {% endif %}
+                                    {% if section.show_name_legend %}
+                                        <p class="group-label spa-name-legend">Name</p>
+                                    {% endif %}
 
-                    {% for section in page.sections %}
-                        <section class="form-section">
-                            <h3>{{ section.title }}</h3>
-
-                            {% if section.layout == "fields" %}
-                                <div class="field-grid {% if section.columns == 2 %}field-grid-two{% elif section.columns == 3 %}field-grid-three{% endif %}">
-                                    {% for field in section.bound_fields %}
-                                        <div class="field-group {% if field.errors %}has-error{% endif %}">
-                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                            {{ field }}
-                                            {% if field.errors %}
-                                                <div class="field-error">{{ field.errors|striptags }}</div>
-                                            {% endif %}
+                                    {% if section.layout == "fields" %}
+                                        <div class="field-grid {% if section.columns == 2 %}field-grid-two{% elif section.columns == 3 %}field-grid-three{% endif %}">
+                                            {% for field in section.bound_fields %}
+                                                <div class="field-group {% if field.errors %}has-error{% endif %}">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                    {{ field }}
+                                                    {% if field.errors %}
+                                                        <div class="field-error">{{ field.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                    {% endfor %}
-                                </div>
-                            {% elif section.layout == "cards" %}
-                                <div class="ratings-grid {% if section.columns == 3 %}ratings-grid-three{% endif %}">
-                                    {% for field in section.bound_fields %}
-                                        <div class="choice-card {% if field.errors %}has-error{% endif %}">
-                                            <p class="group-label">{{ field.label }}</p>
-                                            {{ field }}
-                                            {% if field.errors %}
-                                                <div class="field-error">{{ field.errors|striptags }}</div>
-                                            {% endif %}
+                                    {% elif section.layout == "cards" %}
+                                        <div class="ratings-grid {% if section.columns == 3 %}ratings-grid-three{% endif %}">
+                                            {% for field in section.bound_fields %}
+                                                <div class="choice-card {% if field.errors %}has-error{% endif %}">
+                                                    <p class="group-label">{{ field.label }}</p>
+                                                    {{ field }}
+                                                    {% if field.errors %}
+                                                        <div class="field-error">{{ field.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {% for field in section.bound_fields %}
-                                    <div class="{% if field.name == 'comments' %}field-group{% else %}choice-group{% endif %} {% if field.errors %}has-error{% endif %}">
-                                        {% if field.name == 'comments' %}
-                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                            {{ field }}
-                                        {% else %}
-                                            <p class="group-label">{{ field.label }}</p>
-                                            <div class="choice-list {% if field.name == 'overall_experience' or field.name == 'recommend_rating' or field.name == 'overall_spa_experience' %}choice-list-inline{% endif %} {% if field.name == 'recommend_rating' or field.name == 'therapist_rating' %}choice-list-score{% endif %}">
-                                                {{ field }}
+                                    {% else %}
+                                        {% if section.score and section.columns == 2 %}
+                                            <div class="score-grid score-grid-2">
+                                        {% endif %}
+                                        {% for field in section.bound_fields %}
+                                            {% if field.widget_type == 'textinput' or field.widget_type == 'textarea' or field.widget_type == 'dateinput' %}
+                                                <div class="field-group {% if field.errors %}has-error{% endif %}">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                    {{ field }}
+                                                    {% if field.errors %}
+                                                        <div class="field-error">{{ field.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                <div class="choice-group {% if field.errors %}has-error{% endif %}">
+                                                    <p class="group-label">{{ field.label }}</p>
+                                                    <div class="choice-list {% if field.name == 'overall_experience' or field.name == 'recommend_rating' or field.name == 'overall_spa_experience' or field.name == 'recommend' or field.name == 'outlet_visited' %}choice-list-inline{% endif %} {% if field.name == 'recommend_rating' or field.name == 'therapist_rating' or field.name == 'overall_satisfaction' or section.score %}choice-list-score{% endif %}">
+                                                        {{ field }}
+                                                    </div>
+                                                    {% if field.errors %}
+                                                        <div class="field-error">{{ field.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if section.score and section.columns == 2 %}
                                             </div>
                                         {% endif %}
-                                        {% if field.errors %}
-                                            <div class="field-error">{{ field.errors|striptags }}</div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        </section>
-                    {% endfor %}
+                                    {% endif %}
+                                </section>
+                            {% endfor %}
 
-                    <button type="submit" class="submit-button">{{ page.submit_label }}</button>
-                </form>
+                            <div class="submit-wrap">
+                                <button type="submit" class="submit-button submit-button--full">
+                                    {{ page.submit_label }}
+                                    {% if page.submit_with_chevron %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                                    {% endif %}
+                                </button>
+                            </div>
+
+                            {% if page.footer_note %}
+                                <p class="form-footer-note form-footer-note--after-submit">{{ page.footer_note }}</p>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 </body>
 </html>

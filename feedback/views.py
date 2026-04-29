@@ -1,6 +1,11 @@
 from django.shortcuts import render
 
-from .forms import ClubFeedbackForm, HotelFeedbackForm, SpaFeedbackForm
+from .forms import (
+    ClubFeedbackForm,
+    HotelFeedbackForm,
+    RestaurantFeedbackForm,
+    SpaFeedbackForm,
+)
 
 
 FORM_PAGES = {
@@ -14,6 +19,10 @@ FORM_PAGES = {
             "Service and facility ratings",
             "Comments and contact preference",
         ],
+        "form_intro_kicker": "Member Feedback",
+        "form_intro_title": "Share your Experience",
+        "footer_note": "",
+        "submit_with_chevron": True,
         "submit_label": "Submit club feedback",
         "form_class": ClubFeedbackForm,
         "sections": [
@@ -43,50 +52,64 @@ FORM_PAGES = {
     },
     "spa": {
         "title": "Spa Feedback Form",
-        "kicker": "Wellness experience",
-        "heading": "Tell us about your spa treatment",
-        "description": "A separate wellness form for treatment quality, therapist support, and comfort preferences.",
+        "kicker": "Spa experience",
+        "heading": "Spa Feedback Form",
+        "description": "Tell us about your visit—your satisfaction, treatment, and therapist help us improve every detail.",
         "hero_points": [
-            "Service date and guest details",
-            "Spa satisfaction and treatment reasons",
-            "Therapist rating and follow-up",
+            "Name and date of service",
+            "Overall satisfaction and reasons for your visit",
+            "Massage pressure, therapist care, and follow-up preferences",
         ],
-        "submit_label": "Submit spa feedback",
+        "form_intro_kicker": "",
+        "form_intro_title": "Spa Feedback Form",
+        "footer_note": "",
+        "submit_with_chevron": False,
+        "submit_label": "SEND",
         "form_class": SpaFeedbackForm,
         "sections": [
             {
-                "title": "Visit details",
+                "title": "",
+                "show_name_legend": True,
                 "layout": "fields",
-                "fields": ["guest_name", "service_date"],
+                "fields": ["first_name", "last_name", "service_date"],
                 "columns": 2,
             },
             {
-                "title": "Experience feedback",
+                "title": "Your experience",
                 "layout": "choices",
-                "fields": ["overall_spa_experience", "therapy_reasons", "massage_pressure", "concerns_addressed"],
+                "fields": [
+                    "overall_spa_experience",
+                    "therapy_reasons",
+                    "massage_pressure",
+                    "concerns_addressed",
+                ],
             },
             {
-                "title": "Closing details",
+                "title": "Before you go",
                 "layout": "choices",
-                "fields": ["therapist_rating", "follow_up", "comments"],
+                "fields": ["therapist_rating", "follow_up"],
             },
         ],
     },
     "hotel": {
         "title": "Hotel Feedback Form",
-        "kicker": "Hospitality experience",
-        "heading": "Tell us about your recent stay",
-        "description": "A structured hospitality form for guest details, service ratings, room feedback, and comments.",
+        "kicker": "Hospitality",
+        "heading": "Hotel Feedback Form",
+        "description": "We value your feedback! Please take a moment to let us know about your recent stay.",
         "hero_points": [
-            "Guest and stay information",
-            "Service and room quality ratings",
-            "Improvement comments",
+            "Guest name, room, and stay dates",
+            "Service quality: front desk, housekeeping, and dining",
+            "Room, amenities, pool & fitness—and your comments",
         ],
+        "form_intro_kicker": "",
+        "form_intro_title": "Hotel Feedback Form",
+        "footer_note": "Thank you for your time! We look forward to welcoming you back.",
+        "submit_with_chevron": True,
         "submit_label": "Submit hotel feedback",
         "form_class": HotelFeedbackForm,
         "sections": [
             {
-                "title": "Stay details",
+                "title": "Guest information",
                 "layout": "fields",
                 "fields": ["guest_name", "room_number", "check_in", "check_out"],
                 "columns": 2,
@@ -110,19 +133,101 @@ FORM_PAGES = {
             },
         ],
     },
+    "restaurant": {
+        "title": "Resident Dining Feedback",
+        "kicker": "Dining experience",
+        "heading": "Resident Dining Feedback Form",
+        "description": "Tell us about your meal—your honest feedback helps our team perfect every visit.",
+        "hero_points": [
+            "Date, outlet, and resident name (optional)",
+            "Rate quality, service, ambience, and value (1–5)",
+            "Overall satisfaction, recommendation, and comments",
+        ],
+        "form_intro_kicker": "Imperial Club",
+        "form_intro_title": "Resident Dining Feedback Form",
+        "footer_note": "Thank you! We appreciate your feedback.",
+        "submit_with_chevron": True,
+        "submit_label": "Submit dining feedback",
+        "form_class": RestaurantFeedbackForm,
+        "sections": [
+            {
+                "title": "Visit details",
+                "layout": "fields",
+                "fields": ["visit_date", "resident_name"],
+                "columns": 2,
+            },
+            {
+                "title": "Outlet visited",
+                "layout": "choices",
+                "fields": ["outlet_visited"],
+            },
+            {
+                "title": "Please rate your experience (1 = Poor, 5 = Excellent)",
+                "layout": "choices",
+                "score": True,
+                "columns": 2,
+                "fields": [
+                    "food_quality",
+                    "food_presentation",
+                    "service_quality",
+                    "staff_courtesy",
+                    "ambience",
+                    "decor",
+                    "music",
+                    "cleanliness",
+                    "value_for_money",
+                ],
+            },
+            {
+                "title": "Overall",
+                "layout": "choices",
+                "fields": ["overall_satisfaction", "recommend", "comments"],
+            },
+        ],
+    },
 }
 
 
 def dashboard(request):
-    form_cards = [
-        {
-            "slug": slug,
-            "title": config["title"],
-            "description": config["description"],
-            "kicker": config["kicker"],
-        }
-        for slug, config in FORM_PAGES.items()
-    ]
+    """Dashboard cards mirror `imperial-club-feedback/src/App.tsx` DashboardCard copy and icons."""
+    card_meta = {
+        "club": {
+            "title": "Club Visit",
+            "kicker": "Fitness & Social",
+            "description": "Service, facility ratings, and overall club experience.",
+            "icon": "activity",
+        },
+        "spa": {
+            "title": "Spa Treatment",
+            "kicker": "Wellness & Care",
+            "description": "Therapist quality, treatment comfort, and wellness feedback.",
+            "icon": "waves",
+        },
+        "hotel": {
+            "title": "Hotel Stay",
+            "kicker": "Hospitality",
+            "description": "Room cleanliness, hospitality staff, and amenities review.",
+            "icon": "hotel",
+        },
+        "restaurant": {
+            "title": "Resident Dining",
+            "kicker": "Dining & Outlets",
+            "description": "Outlet, food, service, ambience, and overall satisfaction.",
+            "icon": "utensils",
+        },
+    }
+    form_cards = []
+    for slug, config in FORM_PAGES.items():
+        meta = card_meta[slug]
+        form_cards.append(
+            {
+                "slug": slug,
+                "title": meta["title"],
+                "description": meta["description"],
+                "kicker": meta["kicker"],
+                "icon": meta["icon"],
+            }
+        )
     return render(request, "feedback/dashboard.html", {"form_cards": form_cards})
 
 
