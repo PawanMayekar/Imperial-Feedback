@@ -99,7 +99,6 @@ class ClubFeedback(ContactFeedbackFields, TimestampedFeedback):
     recommend_rating = models.PositiveSmallIntegerField(
         choices=SCORE_1_TO_5, validators=SCORE_VALIDATORS
     )
-    follow_up = models.CharField(max_length=10, choices=YES_NO_CHOICES)
 
     class Meta(TimestampedFeedback.Meta):
         verbose_name = "Club feedback"

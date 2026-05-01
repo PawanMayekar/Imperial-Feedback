@@ -133,7 +133,6 @@ class ClubFeedbackForm(ContactFeedbackBase):
         label="Which reasons best reflect your visit?",
         choices=VISIT_REASON_CHOICES,
         widget=forms.CheckboxSelectMultiple,
-        required=False,
     )
     staff_service = forms.ChoiceField(
         label="Front desk and staff support",
@@ -154,13 +153,11 @@ class ClubFeedbackForm(ContactFeedbackBase):
         label="Dining or lounge experience",
         choices=RATING_CHOICES,
         widget=forms.RadioSelect,
-        required=False,
     )
     activity_comfort = forms.ChoiceField(
         label="How was the comfort level of the activity or service you used?",
         choices=COMFORT_CHOICES,
         widget=forms.RadioSelect,
-        required=False,
     )
     concerns_addressed = forms.ChoiceField(
         label="Did our team address your needs or concerns?",
@@ -171,11 +168,6 @@ class ClubFeedbackForm(ContactFeedbackBase):
         label="How likely are you to recommend the club?",
         choices=[(5, "5"), (4, "4"), (3, "3"), (2, "2"), (1, "1")],
         coerce=int,
-        widget=forms.RadioSelect,
-    )
-    follow_up = forms.ChoiceField(
-        label="May we contact you regarding your feedback?",
-        choices=YES_NO_CHOICES,
         widget=forms.RadioSelect,
     )
     comments = forms.CharField(
@@ -206,7 +198,6 @@ class SpaFeedbackForm(ContactFeedbackBase):
         label="Which reason(s) most closely reflect why you seek massage therapy?",
         choices=THERAPY_REASON_CHOICES,
         widget=forms.CheckboxSelectMultiple,
-        required=False,
     )
     massage_pressure = forms.ChoiceField(
         label="How was the pressure during the massage?",
@@ -283,10 +274,9 @@ class HotelFeedbackForm(ContactFeedbackBase):
         widget=forms.RadioSelect,
     )
     pool_fitness = forms.ChoiceField(
-        label="Pool/Fitness Center (if used)",
+        label="Pool/Fitness Center",
         choices=RATING_CHOICES,
         widget=forms.RadioSelect,
-        required=False,
     )
     comments = forms.CharField(
         label="Extra remarks (optional)",

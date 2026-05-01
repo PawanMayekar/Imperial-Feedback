@@ -2202,3 +2202,122 @@ button {
         max-height: 60vh;
     }
 }
+
+
+/* ==========================================================
+   Form validation — toast + missing-field highlighting.
+   Used by feedback/static/feedback/js/form-validation.js.
+   ========================================================== */
+
+/* Highlight the choice-list when the wrapping group is in error.
+   Existing rules already colour the per-option label borders; here we
+   add a subtle wash so the whole block reads as the problem area. */
+.choice-group.has-error .group-label,
+.choice-card.has-error .group-label {
+    color: #ab4738;
+}
+
+.choice-group.has-error .choice-list {
+    border-radius: 0.85rem;
+    box-shadow: 0 0 0 2px rgba(199, 106, 92, 0.18);
+}
+
+.choice-list-score.has-error label,
+.choice-group.has-error .choice-list-score label {
+    border-color: rgba(199, 106, 92, 0.45);
+}
+
+/* Shake animation on the first missing field after a failed submit. */
+@keyframes form-shake {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-6px); }
+    30% { transform: translateX(6px); }
+    45% { transform: translateX(-4px); }
+    60% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+    90% { transform: translateX(2px); }
+}
+
+.is-shaking {
+    animation: form-shake 0.45s ease-in-out;
+}
+
+/* ----- Toast ----- */
+.form-toast {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 9999;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: min(22rem, calc(100vw - 2rem));
+    padding: 0.95rem 1rem 0.95rem 1rem;
+    background: #ffffff;
+    color: #2a1612;
+    border: 1px solid rgba(199, 106, 92, 0.28);
+    border-left: 4px solid #c76a5c;
+    border-radius: 0.85rem;
+    box-shadow:
+        0 1px 0 rgba(199, 106, 92, 0.14),
+        0 18px 40px rgba(26, 26, 26, 0.18);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    pointer-events: auto;
+}
+
+.form-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-toast.is-leaving {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.form-toast-icon {
+    flex-shrink: 0;
+    color: #c76a5c;
+    margin-top: 1px;
+}
+
+.form-toast-body {
+    flex: 1;
+    color: #2a1612;
+}
+
+.form-toast-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -2px;
+    margin-right: -4px;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: rgba(26, 26, 26, 0.5);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.form-toast-close:hover {
+    background: rgba(199, 106, 92, 0.1);
+    color: #ab4738;
+}
+
+@media (max-width: 540px) {
+    .form-toast {
+        top: 0.75rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        width: auto;
+    }
+}

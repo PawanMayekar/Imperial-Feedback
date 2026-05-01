@@ -50,7 +50,7 @@ FORM_PAGES = {
             {
                 "title": "Final questions",
                 "layout": "choices",
-                "fields": ["activity_comfort", "concerns_addressed", "recommend_rating", "follow_up"],
+                "fields": ["activity_comfort", "concerns_addressed", "recommend_rating"],
             },
             {
                 "title": "Extra remarks",
