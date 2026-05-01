@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 
 
 RATING_CHOICES = [
@@ -23,32 +24,102 @@ YES_NO_CHOICES = [
 
 SCORE_1_TO_5 = [(1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5")]
 
+VISIT_REASON_CHOICES = [
+    ("fitness", "Fitness and wellness"),
+    ("dining", "Dining and lounge"),
+    ("events", "Events and social gatherings"),
+    ("family", "Family time"),
+    ("business", "Business meetings"),
+]
 
-class ClubFeedbackForm(forms.Form):
-    VISIT_REASON_CHOICES = [
-        ("fitness", "Fitness and wellness"),
-        ("dining", "Dining and lounge"),
-        ("events", "Events and social gatherings"),
-        ("family", "Family time"),
-        ("business", "Business meetings"),
-    ]
+COMFORT_CHOICES = [
+    ("too_light", "Too light"),
+    ("too_strong", "Too strong"),
+    ("perfect", "Just right"),
+]
 
-    COMFORT_CHOICES = [
-        ("too_light", "Too light"),
-        ("too_strong", "Too strong"),
-        ("perfect", "Just right"),
-    ]
+THERAPY_REASON_CHOICES = [
+    ("stress_relief", "Stress Relief"),
+    ("pain_management", "Pain Management"),
+    ("injury", "Injury"),
+    ("relaxation", "Relax & Me-Time"),
+]
 
-    member_name = forms.CharField(
-        label="Member name",
-        max_length=100,
-        widget=forms.TextInput(attrs={"placeholder": "Jane Smith", "autocomplete": "name"}),
+PRESSURE_CHOICES = [
+    ("too_light", "Too light"),
+    ("too_hard", "Too hard"),
+    ("perfect", "Perfect"),
+]
+
+OUTLET_CHOICES = [
+    ("deli_cafe", "Deli Café"),
+    ("aqua", "Aqua"),
+    ("on_nine", "On Nine"),
+    ("whisky_mist", "Whisky Mist"),
+]
+
+RECOMMEND_CHOICES = [
+    ("yes", "Yes"),
+    ("no", "No"),
+    ("maybe", "Maybe"),
+]
+
+ROOM_NUMBER_CHOICES = [
+    ("902", "902"),
+    ("903", "903"),
+    ("904", "904"),
+    ("905", "905"),
+    ("906", "906"),
+    ("907", "907"),
+    ("908", "908"),
+    ("909", "909"),
+]
+
+# Permits +, -, spaces, parentheses, and 7–20 digits/separators.
+PHONE_REGEX_VALIDATOR = RegexValidator(
+    regex=r"^[0-9+\-\s()]{7,20}$",
+    message="Enter a valid phone number (digits, +, -, spaces, parentheses).",
+)
+
+
+class ContactFeedbackBase(forms.Form):
+    """
+    Mandatory resident-contact fields shared by every feedback form.
+
+    All four feedback forms (Club / Spa / Hotel / Restaurant) inherit from
+    this base so the contact triplet is enforced consistently.
+    """
+
+    name = forms.CharField(
+        label="Name",
+        max_length=120,
+        widget=forms.TextInput(
+            attrs={"placeholder": "Your full name", "autocomplete": "name"}
+        ),
     )
-    membership_id = forms.CharField(
-        label="Membership ID",
-        max_length=40,
-        widget=forms.TextInput(attrs={"placeholder": "CLB-2048"}),
+    flat_no = forms.CharField(
+        label="Flat No.",
+        max_length=20,
+        widget=forms.TextInput(
+            attrs={"placeholder": "e.g. 902", "autocomplete": "off"}
+        ),
     )
+    phone_number = forms.CharField(
+        label="Phone Number",
+        max_length=20,
+        validators=[PHONE_REGEX_VALIDATOR],
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "+91 98765 43210",
+                "type": "tel",
+                "autocomplete": "tel",
+                "inputmode": "tel",
+            }
+        ),
+    )
+
+
+class ClubFeedbackForm(ContactFeedbackBase):
     visit_date = forms.DateField(
         label="Date of visit",
         widget=forms.DateInput(attrs={"type": "date"}),
@@ -108,43 +179,20 @@ class ClubFeedbackForm(forms.Form):
         widget=forms.RadioSelect,
     )
     comments = forms.CharField(
-        label="Additional comments",
+        label="Extra remarks (optional)",
+        required=False,
         widget=forms.Textarea(
             attrs={
                 "placeholder": "Share any suggestions, concerns, or highlights from your visit.",
                 "rows": 6,
             }
         ),
-        required=False,
     )
 
 
-class SpaFeedbackForm(forms.Form):
+class SpaFeedbackForm(ContactFeedbackBase):
     """Field wording aligned with WhatsApp spa feedback reference (mobile form)."""
 
-    THERAPY_REASON_CHOICES = [
-        ("stress_relief", "Stress Relief"),
-        ("pain_management", "Pain Management"),
-        ("injury", "Injury"),
-        ("relaxation", "Relax & Me-Time"),
-    ]
-
-    PRESSURE_CHOICES = [
-        ("too_light", "Too light"),
-        ("too_hard", "Too hard"),
-        ("perfect", "Perfect"),
-    ]
-
-    first_name = forms.CharField(
-        label="First",
-        max_length=80,
-        widget=forms.TextInput(attrs={"placeholder": "First", "autocomplete": "given-name"}),
-    )
-    last_name = forms.CharField(
-        label="Last",
-        max_length=80,
-        widget=forms.TextInput(attrs={"placeholder": "Last", "autocomplete": "family-name"}),
-    )
     service_date = forms.DateField(
         label="Date of service",
         widget=forms.DateInput(attrs={"type": "date"}),
@@ -177,24 +225,29 @@ class SpaFeedbackForm(forms.Form):
         widget=forms.RadioSelect,
     )
     follow_up = forms.ChoiceField(
-        label="Would you like us to contact you for any further suggestions or questions regarding your answers?",
+        label="Did the therapist suggested different offerings for therapies?",
         choices=YES_NO_CHOICES,
         widget=forms.RadioSelect,
     )
+    comments = forms.CharField(
+        label="Extra remarks (optional)",
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": "Anything else you'd like us to know?",
+                "rows": 5,
+            }
+        ),
+    )
 
 
-class HotelFeedbackForm(forms.Form):
+class HotelFeedbackForm(ContactFeedbackBase):
     """Wording aligned with WhatsApp hotel feedback reference (Seaside-style layout)."""
 
-    guest_name = forms.CharField(
-        label="Guest Name",
-        max_length=100,
-        widget=forms.TextInput(attrs={"placeholder": "", "autocomplete": "name"}),
-    )
-    room_number = forms.CharField(
+    room_number = forms.ChoiceField(
         label="Room #",
-        max_length=20,
-        widget=forms.TextInput(attrs={"placeholder": ""}),
+        choices=[("", "Select your room")] + ROOM_NUMBER_CHOICES,
+        widget=forms.Select(attrs={"class": "js-custom-select"}),
     )
     check_in = forms.DateField(
         label="Check-in",
@@ -236,42 +289,23 @@ class HotelFeedbackForm(forms.Form):
         required=False,
     )
     comments = forms.CharField(
-        label="Please let us know if there's anything specific we could improve.",
+        label="Extra remarks (optional)",
+        required=False,
         widget=forms.Textarea(
             attrs={
-                "placeholder": "",
+                "placeholder": "Please let us know if there's anything specific we could improve.",
                 "rows": 5,
             }
         ),
-        required=False,
     )
 
 
-class RestaurantFeedbackForm(forms.Form):
+class RestaurantFeedbackForm(ContactFeedbackBase):
     """Imperial Club resident dining feedback (per Resident_Feedback_Form.pdf)."""
-
-    OUTLET_CHOICES = [
-        ("deli_cafe", "Deli Café"),
-        ("aqua", "Aqua"),
-        ("on_nine", "On Nine"),
-        ("whisky_mist", "Whisky Mist"),
-    ]
-
-    RECOMMEND_CHOICES = [
-        ("yes", "Yes"),
-        ("no", "No"),
-        ("maybe", "Maybe"),
-    ]
 
     visit_date = forms.DateField(
         label="Date",
         widget=forms.DateInput(attrs={"type": "date"}),
-    )
-    resident_name = forms.CharField(
-        label="Resident name (optional)",
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(attrs={"placeholder": "Optional", "autocomplete": "name"}),
     )
     outlet_visited = forms.ChoiceField(
         label="Outlet visited",
@@ -319,12 +353,12 @@ class RestaurantFeedbackForm(forms.Form):
         widget=forms.RadioSelect,
     )
     comments = forms.CharField(
-        label="Additional comments / suggestions",
+        label="Extra remarks (optional)",
+        required=False,
         widget=forms.Textarea(
             attrs={
                 "placeholder": "Tell us what you loved or what we can improve.",
                 "rows": 5,
             }
         ),
-        required=False,
     )

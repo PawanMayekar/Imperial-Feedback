@@ -1,26 +1,35 @@
 """
 URL configuration for sdcorp project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+The `/admin/` namespace below is intentionally NOT django.contrib.admin —
+we expose a custom admin panel backed by `feedback.UserMaster` instead.
 """
-from django.contrib import admin
+
 from django.urls import path
 
+from feedback.admin_views import (
+    admin_dashboard,
+    admin_feedback_download,
+    admin_feedback_list,
+    admin_login,
+    admin_logout,
+)
 from feedback.views import dashboard, form_page
 
+
 urlpatterns = [
+    # Public site
     path("", dashboard, name="home"),
     path("forms/<str:form_type>/", form_page, name="form-page"),
-    path('admin/', admin.site.urls),
+
+    # Custom admin / reviewer panel
+    path("admin/", admin_dashboard, name="admin-dashboard"),
+    path("admin/login/", admin_login, name="admin-login"),
+    path("admin/logout/", admin_logout, name="admin-logout"),
+    path("admin/<str:slug>/", admin_feedback_list, name="admin-feedback-list"),
+    path(
+        "admin/<str:slug>/download/",
+        admin_feedback_download,
+        name="admin-feedback-download",
+    ),
 ]

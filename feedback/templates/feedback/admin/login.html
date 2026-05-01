@@ -1,0 +1,54 @@
+{% extends "feedback/admin/base.html" %}
+{% load static %}
+
+{% block title %}Sign in — Imperial Club Reviewer{% endblock %}
+
+{% block content %}
+    <section class="admin-login-shell">
+        <div class="admin-login-card">
+            <div class="admin-login-logo">
+                <img src="{% static 'feedback/images/theimperialclubtransparent.png' %}" alt="The Imperial Club logo">
+            </div>
+            <p class="admin-login-kicker">Reviewer Access</p>
+            <h1 class="admin-login-title">Sign in to continue</h1>
+            <p class="admin-login-subtitle">
+                Enter your reviewer credentials to view and download member feedback.
+            </p>
+
+            {% if error %}
+                <div class="admin-login-error" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <form class="admin-login-form" method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label class="admin-field">
+                    <span class="admin-field-label">Username</span>
+                    <input
+                        type="text"
+                        name="username"
+                        autocomplete="username"
+                        autofocus
+                        required
+                        value="{{ username }}"
+                    >
+                </label>
+
+                <label class="admin-field">
+                    <span class="admin-field-label">Password</span>
+                    <input
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </label>
+
+                <button type="submit" class="admin-button admin-button--primary">
+                    Sign in
+                </button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

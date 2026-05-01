@@ -1,0 +1,43 @@
+{% extends "feedback/admin/base.html" %}
+
+{% block title %}Reviewer Dashboard — Imperial Club{% endblock %}
+
+{% block content %}
+    <section class="admin-page">
+        <header class="admin-page-header">
+            <p class="admin-page-kicker">Imperial Club</p>
+            <h1 class="admin-page-title">Feedback overview</h1>
+            <p class="admin-page-subtitle">
+                Browse submitted feedback by category. Each table is downloadable as CSV.
+            </p>
+        </header>
+
+        <div class="admin-card-grid">
+            {% for card in cards %}
+                <article class="admin-card">
+                    <p class="admin-card-kicker">{{ card.slug|upper }}</p>
+                    <h2 class="admin-card-title">{{ card.title }}</h2>
+                    <p class="admin-card-count">
+                        <span class="admin-card-count-num">{{ card.count }}</span>
+                        <span class="admin-card-count-label">total responses</span>
+                    </p>
+                    {% if card.latest %}
+                        <p class="admin-card-latest">
+                            Latest: {{ card.latest|date:"M j, Y · H:i" }}
+                        </p>
+                    {% else %}
+                        <p class="admin-card-latest admin-card-latest--empty">No submissions yet</p>
+                    {% endif %}
+                    <div class="admin-card-actions">
+                        <a class="admin-button admin-button--ghost" href="{% url 'admin-feedback-list' card.slug %}">
+                            View
+                        </a>
+                        <a class="admin-button admin-button--primary" href="{% url 'admin-feedback-download' card.slug %}">
+                            Download CSV
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

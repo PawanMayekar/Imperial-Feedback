@@ -1,0 +1,55 @@
+{% extends "feedback/admin/base.html" %}
+
+{% block title %}{{ title }} — Reviewer{% endblock %}
+
+{% block content %}
+    <section class="admin-page">
+        <header class="admin-page-header admin-page-header--row">
+            <div>
+                <a class="admin-back" href="{% url 'admin-dashboard' %}">← Back to dashboard</a>
+                <p class="admin-page-kicker">{{ slug|upper }}</p>
+                <h1 class="admin-page-title">{{ title }}</h1>
+                <p class="admin-page-subtitle">
+                    Showing {{ showing }} of {{ total }} response{{ total|pluralize }}.
+                </p>
+            </div>
+            <div class="admin-page-actions">
+                <a class="admin-button admin-button--primary" href="{% url 'admin-feedback-download' slug %}">
+                    Download CSV
+                </a>
+            </div>
+        </header>
+
+        {% if rows %}
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                {% for cell in row.values %}
+                                    <td>{{ cell|default_if_none:"—"|default:"—" }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if total > showing %}
+                <p class="admin-table-note">
+                    Showing the {{ showing }} most recent responses. Use the CSV download for the full export.
+                </p>
+            {% endif %}
+        {% else %}
+            <div class="admin-empty">
+                <p>No feedback recorded yet.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

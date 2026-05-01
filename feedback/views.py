@@ -6,6 +6,10 @@ from .forms import (
     RestaurantFeedbackForm,
     SpaFeedbackForm,
 )
+from .models import FEEDBACK_MODELS
+
+
+CONTACT_FIELDS = ["name", "flat_no", "phone_number"]
 
 
 FORM_PAGES = {
@@ -15,9 +19,9 @@ FORM_PAGES = {
         "heading": "Tell us about your latest club visit",
         "description": "Capture member satisfaction, services used, facility ratings, and follow-up preferences.",
         "hero_points": [
-            "Member and visit details",
+            "Resident details and date of visit",
             "Service and facility ratings",
-            "Comments and contact preference",
+            "Optional remarks and contact preference",
         ],
         "form_intro_kicker": "Member Feedback",
         "form_intro_title": "Share your Experience",
@@ -27,9 +31,9 @@ FORM_PAGES = {
         "form_class": ClubFeedbackForm,
         "sections": [
             {
-                "title": "Visit details",
+                "title": "Your details",
                 "layout": "fields",
-                "fields": ["member_name", "membership_id", "visit_date"],
+                "fields": [*CONTACT_FIELDS, "visit_date"],
                 "columns": 2,
             },
             {
@@ -46,7 +50,12 @@ FORM_PAGES = {
             {
                 "title": "Final questions",
                 "layout": "choices",
-                "fields": ["activity_comfort", "concerns_addressed", "recommend_rating", "follow_up", "comments"],
+                "fields": ["activity_comfort", "concerns_addressed", "recommend_rating", "follow_up"],
+            },
+            {
+                "title": "Extra remarks",
+                "layout": "choices",
+                "fields": ["comments"],
             },
         ],
     },
@@ -56,7 +65,7 @@ FORM_PAGES = {
         "heading": "Spa Feedback Form",
         "description": "Tell us about your visit—your satisfaction, treatment, and therapist help us improve every detail.",
         "hero_points": [
-            "Name and date of service",
+            "Resident details and date of service",
             "Overall satisfaction and reasons for your visit",
             "Massage pressure, therapist care, and follow-up preferences",
         ],
@@ -68,10 +77,9 @@ FORM_PAGES = {
         "form_class": SpaFeedbackForm,
         "sections": [
             {
-                "title": "",
-                "show_name_legend": True,
+                "title": "Your details",
                 "layout": "fields",
-                "fields": ["first_name", "last_name", "service_date"],
+                "fields": [*CONTACT_FIELDS, "service_date"],
                 "columns": 2,
             },
             {
@@ -89,6 +97,11 @@ FORM_PAGES = {
                 "layout": "choices",
                 "fields": ["therapist_rating", "follow_up"],
             },
+            {
+                "title": "Extra remarks",
+                "layout": "choices",
+                "fields": ["comments"],
+            },
         ],
     },
     "hotel": {
@@ -97,9 +110,9 @@ FORM_PAGES = {
         "heading": "Hotel Feedback Form",
         "description": "We value your feedback! Please take a moment to let us know about your recent stay.",
         "hero_points": [
-            "Guest name, room, and stay dates",
+            "Resident details and stay dates",
             "Service quality: front desk, housekeeping, and dining",
-            "Room, amenities, pool & fitness—and your comments",
+            "Room, amenities, pool & fitness — plus optional remarks",
         ],
         "form_intro_kicker": "",
         "form_intro_title": "Hotel Feedback Form",
@@ -109,10 +122,16 @@ FORM_PAGES = {
         "form_class": HotelFeedbackForm,
         "sections": [
             {
-                "title": "Guest information",
+                "title": "Your details",
                 "layout": "fields",
-                "fields": ["guest_name", "room_number", "check_in", "check_out"],
-                "columns": 2,
+                "fields": CONTACT_FIELDS,
+                "columns": 3,
+            },
+            {
+                "title": "Stay details",
+                "layout": "fields",
+                "fields": ["room_number", "check_in", "check_out"],
+                "columns": 3,
             },
             {
                 "title": "Service quality",
@@ -127,7 +146,7 @@ FORM_PAGES = {
                 "columns": 3,
             },
             {
-                "title": "Additional comments",
+                "title": "Extra remarks",
                 "layout": "choices",
                 "fields": ["comments"],
             },
@@ -139,9 +158,9 @@ FORM_PAGES = {
         "heading": "Resident Dining Feedback Form",
         "description": "Tell us about your meal—your honest feedback helps our team perfect every visit.",
         "hero_points": [
-            "Date, outlet, and resident name (optional)",
+            "Resident details and date of visit",
             "Rate quality, service, ambience, and value (1–5)",
-            "Overall satisfaction, recommendation, and comments",
+            "Overall satisfaction, recommendation, and remarks",
         ],
         "form_intro_kicker": "Imperial Club",
         "form_intro_title": "Resident Dining Feedback Form",
@@ -151,9 +170,9 @@ FORM_PAGES = {
         "form_class": RestaurantFeedbackForm,
         "sections": [
             {
-                "title": "Visit details",
+                "title": "Your details",
                 "layout": "fields",
-                "fields": ["visit_date", "resident_name"],
+                "fields": [*CONTACT_FIELDS, "visit_date"],
                 "columns": 2,
             },
             {
@@ -181,7 +200,12 @@ FORM_PAGES = {
             {
                 "title": "Overall",
                 "layout": "choices",
-                "fields": ["overall_satisfaction", "recommend", "comments"],
+                "fields": ["overall_satisfaction", "recommend"],
+            },
+            {
+                "title": "Extra remarks",
+                "layout": "choices",
+                "fields": ["comments"],
             },
         ],
     },
@@ -234,11 +258,14 @@ def dashboard(request):
 def form_page(request, form_type):
     config = FORM_PAGES[form_type]
     form_class = config["form_class"]
+    model_class = FEEDBACK_MODELS.get(form_type)
     submitted = False
 
     if request.method == "POST":
         form = form_class(request.POST)
         if form.is_valid():
+            if model_class is not None:
+                model_class.objects.create(**form.cleaned_data)
             submitted = True
             form = form_class()
     else:
