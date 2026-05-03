@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ds%t+d2(=)ci@fuyv3a!+y-by!67z2oba7kgf2m23crxkb&#^$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.115.3.147', 'localhost', '127.0.0.1', '45.114.141.65', 'clubfeedback.sdcorp.in']
+
+CSRF_TRUSTED_ORIGINS = ['https://clubfeedback.sdcorp.in']
 
 
 # Application definition
@@ -60,6 +62,8 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
+                'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -77,8 +81,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'feedback_club',
-        'HOST': 'localhost',
-        'PASSWORD': '',
+        'HOST': '172.16.23.82',
+        'PASSWORD': 'SDCHPL@2026',
         'USER': 'root',
         'PORT': '3306',
     }
@@ -109,7 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Display & template formatting for India (stored in DB as UTC when USE_TZ is True).
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -120,3 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

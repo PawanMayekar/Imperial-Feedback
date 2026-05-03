@@ -5,7 +5,10 @@ The `/admin/` namespace below is intentionally NOT django.contrib.admin —
 we expose a custom admin panel backed by `feedback.UserMaster` instead.
 """
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
+from django.views.generic import RedirectView
 
 from feedback.admin_views import (
     admin_dashboard,
@@ -18,6 +21,13 @@ from feedback.views import dashboard, form_page
 
 
 urlpatterns = [
+    path(
+        "favicon.ico",
+        RedirectView.as_view(
+            url=f"{settings.MEDIA_URL}theimperialclubtransparent.png",
+            permanent=False,
+        ),
+    ),
     # Public site
     path("", dashboard, name="home"),
     path("forms/<str:form_type>/", form_page, name="form-page"),
@@ -33,3 +43,6 @@ urlpatterns = [
         name="admin-feedback-download",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

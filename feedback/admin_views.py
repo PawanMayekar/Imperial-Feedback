@@ -16,12 +16,14 @@ and Django's session middleware to keep things simple.
 from __future__ import annotations
 
 import csv
+from datetime import datetime
 from functools import wraps
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
 from .models import FEEDBACK_MODELS, UserMaster
@@ -81,6 +83,8 @@ def _row_for(obj, fields):
         value = getattr(obj, field.name)
         if field.choices:
             value = getattr(obj, f"get_{field.name}_display")()
+        elif isinstance(value, datetime):
+            value = timezone.localtime(value).strftime("%Y-%m-%d %H:%M:%S")
         elif isinstance(value, list):
             value = ", ".join(str(item) for item in value) if value else ""
         elif value is None:
