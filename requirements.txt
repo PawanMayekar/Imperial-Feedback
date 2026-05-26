@@ -1,6 +1,9 @@
 asgiref==3.11.1
+celery[redis]
+django-celery-beat
 Django==6.0.4
 mysqlclient==2.2.8
+openpyxl
+qrcode[pil]==8.2
 sqlparse==0.5.5
 tzdata==2026.2
-qrcode[pil]==8.2
