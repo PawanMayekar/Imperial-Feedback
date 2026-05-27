@@ -10,10 +10,26 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
+
+
+def _env(key: str, default: str = "") -> str:
+    return os.environ.get(key, default).strip()
+
+
+def _env_list(key: str) -> list[str]:
+    raw = _env(key)
+    if not raw:
+        return []
+    return [item.strip() for item in raw.split(",") if item.strip()]
 
 
 # Quick-start development settings - unsuitable for production
@@ -132,23 +148,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # ---------------------------------------------------------------------------
-# Email (Outlook / Office 365)
+# Email (Outlook / Office 365) — credentials from .env
 # ---------------------------------------------------------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'concierge@sdcorp.in'       
-EMAIL_HOST_PASSWORD = 'Sdcorp@123'               
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST = _env('EMAIL_HOST', 'smtp.office365.com')
+EMAIL_PORT = int(_env('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = _env('EMAIL_USE_TLS', 'True').lower() in ('1', 'true', 'yes')
+EMAIL_HOST_USER = _env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = _env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = _env('DEFAULT_FROM_EMAIL') or EMAIL_HOST_USER
 
-FEEDBACK_REPORT_RECIPIENTS = [
-    'operations.manager@theimperialclub.in',
-    'dutymanager.icbtl@theimperialclub.in',
-]
-FEEDBACK_REPORT_CC = [
-    'kshitij.gupta@sdcorp.in',
-]
+FEEDBACK_REPORT_RECIPIENTS = _env_list('FEEDBACK_REPORT_TO')
+FEEDBACK_REPORT_CC = _env_list('FEEDBACK_REPORT_CC')
 
 
 # ---------------------------------------------------------------------------

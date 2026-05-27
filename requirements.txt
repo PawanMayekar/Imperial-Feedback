@@ -1,4 +1,5 @@
 asgiref==3.11.1
+python-dotenv
 celery[redis]
 django-celery-beat
 Django==6.0.4
